@@ -47,6 +47,10 @@ magick \
   -limit map 256MiB \
   "$download" \
   -auto-orient \
+  -alpha on \
+  -fuzz 3% \
+  -fill none \
+  -draw 'color 0,0 floodfill' \
   -thumbnail '20x20>' \
   -background none \
   -gravity center \

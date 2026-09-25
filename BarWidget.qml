@@ -110,7 +110,10 @@ BarWidget {
     imageProcess.running = true
   }
 
-  onConfiguredValueChanged: if (root.componentReady) root.refreshImage()
+  // The shell replaces the settings object when an inline bar value changes.
+  // Listen to that object directly so a newly entered URL is always resolved,
+  // even when the derived setting binding is not invalidated by QML.
+  onSettingsChanged: if (root.componentReady) root.refreshImage()
   Component.onCompleted: {
     root.componentReady = true
     root.refreshImage()

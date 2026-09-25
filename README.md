@@ -70,7 +70,10 @@ These are screenshots from the running bar widget:
 
 ![Modern Apple logo image](screenshots/apple-modern.png)
 
+![White Apple logo image](screenshots/apple-white.png)
+
 The image examples use these direct HTTPS sources:
 
 - Rainbow Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20Computer%20Logo%20rainbow.svg`
 - Modern Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_black.svg`
+- White Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_white.svg`
