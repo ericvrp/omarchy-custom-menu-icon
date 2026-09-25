@@ -73,11 +73,21 @@ These are screenshots from the running bar widget:
 
 ![White Apple logo image](screenshots/apple-white.png)
 
-![Windows logo image](screenshots/windows.png)
+![Blue Windows logo image](screenshots/windows.png)
+
+![Dark Windows logo image](screenshots/windows-dark.png)
+
+![White Windows logo image](screenshots/windows-white.png)
 
 The image examples use these direct HTTPS sources:
 
 - Rainbow Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20Computer%20Logo%20rainbow.svg`
 - Modern Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_black.svg`
 - White Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_white.svg`
-- Windows logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2012.svg`
+- Windows blue logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2012.svg`
+- Windows dark logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_2012-Black.svg`
+- Windows white logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2021_%28White%29.svg`
+
+The chooser uses bundled, transparent high-resolution PNG previews for these
+preset images. Custom HTTPS image URLs continue to be downloaded and cached
+locally.

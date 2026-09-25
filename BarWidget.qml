@@ -40,25 +40,43 @@ BarWidget {
       id: "rainbow-apple",
       label: "Rainbow Apple",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20Computer%20Logo%20rainbow.svg",
-      kind: "image"
+      kind: "image",
+      asset: "apple-rainbow.png"
     },
     {
       id: "modern-apple",
       label: "Modern Apple",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_black.svg",
-      kind: "image"
+      kind: "image",
+      asset: "apple-modern.png"
     },
     {
       id: "white-apple",
       label: "White Apple",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_white.svg",
-      kind: "image"
+      kind: "image",
+      asset: "apple-white.png"
     },
     {
-      id: "windows",
-      label: "Windows",
+      id: "windows-blue",
+      label: "Windows blue",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2012.svg",
-      kind: "image"
+      kind: "image",
+      asset: "windows-blue.png"
+    },
+    {
+      id: "windows-dark",
+      label: "Windows dark",
+      value: "https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_2012-Black.svg",
+      kind: "image",
+      asset: "windows-dark.png"
+    },
+    {
+      id: "windows-white",
+      label: "Windows white",
+      value: "https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2021_%28White%29.svg",
+      kind: "image",
+      asset: "windows-white.png"
     },
     { id: "custom", label: "Custom", value: "", kind: "custom" }
   ]
@@ -95,6 +113,19 @@ BarWidget {
       return
     }
     root.saveValue(option.value)
+  }
+
+  function localImagePathForValue(value) {
+    var candidate = String(value === undefined || value === null ? "" : value)
+    for (var i = 0; i < root.presetOptions.length; i++) {
+      var option = root.presetOptions[i]
+      if (option.kind === "image" && String(option.value) === candidate && option.asset) {
+        return decodeURIComponent(
+          Qt.resolvedUrl("assets/" + option.asset).toString().replace(/^file:\/\//, "")
+        )
+      }
+    }
+    return ""
   }
 
   function openEditor() {
@@ -182,6 +213,13 @@ BarWidget {
 
     if (!root.componentReady || !root.isImageUrl) {
       if (imageProcess.running) imageProcess.running = false
+      return
+    }
+
+    var bundledImagePath = root.localImagePathForValue(root.configuredValue)
+    if (bundledImagePath !== "") {
+      if (imageProcess.running) imageProcess.running = false
+      root.imagePath = bundledImagePath
       return
     }
 
@@ -360,9 +398,9 @@ BarWidget {
                   width: Style.space(38)
                   height: width
                   radius: Style.cornerRadius
-                  color: modelData.id === "modern-apple"
+                  color: modelData.id === "modern-apple" || modelData.id === "windows-dark"
                     ? (root.bar ? root.bar.foreground : Color.foreground)
-                    : (modelData.id === "white-apple"
+                    : (modelData.id === "white-apple" || modelData.id === "windows-white"
                       ? (root.bar ? root.bar.background : Color.background)
                       : "transparent")
                 }
@@ -394,9 +432,11 @@ BarWidget {
                   mipmap: true
                   smooth: true
                   fillMode: Image.PreserveAspectFit
-                  sourceSize.width: width
-                  sourceSize.height: height
-                  source: modelData.kind === "image" ? modelData.value : ""
+                  sourceSize.width: 128
+                  sourceSize.height: 128
+                  source: modelData.kind === "image" && modelData.asset
+                    ? Qt.resolvedUrl("assets/" + modelData.asset)
+                    : ""
                 }
               }
 
