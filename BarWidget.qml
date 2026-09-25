@@ -96,15 +96,6 @@ BarWidget {
     root.refreshImage()
   }
 
-  // Useful for keyboard launchers and for testing without a pointer. The
-  // normal user-facing path remains the right mouse button.
-  IpcHandler {
-    target: "ericvrp.menu-icon"
-
-    function edit(): void { root.broadcast("openEditor") }
-    function reset(): void { root.broadcast("saveValue", "") }
-  }
-
   Process {
     id: imageProcess
 
@@ -178,6 +169,10 @@ BarWidget {
     bar: root.bar
     owner: root
     open: root.editorOpen
+    // The standard emoji picker temporarily takes keyboard focus. Do not use
+    // PopupCard's Hyprland focus grab here or it would dismiss this editor
+    // before the picker can paste back into its field.
+    triggerMode: "hover"
     contentWidth: editorPopup.fittedContentWidth(Style.space(390))
     contentHeight: editorPopup.fittedContentHeight(editorColumn.implicitHeight)
 

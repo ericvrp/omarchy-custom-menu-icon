@@ -60,10 +60,17 @@ omarchy plugin update ericvrp.menu-icon
 
 ## Examples
 
-![Green apple emoji](screenshots/green-apple.svg)
+These are screenshots from the running bar widget:
 
-![Smiley emoji](screenshots/smiley.svg)
+![Green apple emoji](screenshots/green-apple.png)
 
-![Rainbow Apple logo](screenshots/apple-rainbow.svg)
+![Smiley emoji](screenshots/smiley.png)
 
-![Modern Apple logo image](screenshots/apple-modern.svg)
+![Rainbow Apple logo](screenshots/apple-rainbow.png)
+
+![Modern Apple logo image](screenshots/apple-modern.png)
+
+The image examples use these direct HTTPS sources:
+
+- Rainbow Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20Computer%20Logo%20rainbow.svg`
+- Modern Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_black.svg`
