@@ -41,12 +41,19 @@ BarWidget {
   }
 
   function openEditor() {
+    if (root.editorOpen) {
+      root.focusEditor()
+      return
+    }
     editorField.text = root.configuredValue
-    root.editorOpen = true
-    Qt.callLater(root.focusEditor)
+    // KeyboardPanel is a full-screen layer surface. Mapping it during the
+    // initiating mouse-release event lets its dismissal surface consume that
+    // same click and close it immediately. Wait until the event is complete.
+    editorOpenTimer.restart()
   }
 
   function closeEditor() {
+    editorOpenTimer.stop()
     root.editorOpen = false
   }
 
@@ -57,6 +64,15 @@ BarWidget {
   function toggleEditor() {
     if (root.editorOpen) root.closeEditor()
     else root.openEditor()
+  }
+
+  Timer {
+    id: editorOpenTimer
+    interval: 100
+    onTriggered: {
+      root.editorOpen = true
+      Qt.callLater(root.focusEditor)
+    }
   }
 
   function saveValue(value) {
