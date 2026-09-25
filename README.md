@@ -13,15 +13,16 @@ button to display:
 
 - **Left click** — open the Omarchy menu
 - **Middle click** — open a terminal
-- **Right click** — open the icon text editor
+- **Right click** — open the icon preset panel
 
-The editor does not open the emoji picker. Keep its text field focused and use
-the normal Omarchy emoji-picker shortcut (`Super+Ctrl+E` by default). The stock
-picker copies the selected emoji and attempts to paste it into the focused
-field. The editor also accepts normal pasted text and direct HTTPS image URLs.
+The panel offers the current built-in Omarchy glyph, the five example icons,
+and a **Custom** option. Custom text, emoji, and direct HTTPS image URLs can be
+entered in its text field and saved. The normal Omarchy emoji picker remains a
+separate action: keep the custom field focused and use its shortcut
+(`Super+Ctrl+E` by default).
 
-Leaving the field empty and choosing **Reset** restores the original Omarchy
-glyph.
+Selecting the built-in Omarchy glyph restores whatever icon the installed
+Omarchy menu currently provides.
 
 ## Image URLs
 
@@ -64,9 +65,7 @@ These are screenshots from the running bar widget:
 
 ![Default Omarchy icon](screenshots/omarchy-default.png)
 
-![Green apple emoji](screenshots/green-apple.png)
-
-![Smiley emoji](screenshots/smiley.png)
+![Heart emoji](screenshots/heart.png)
 
 ![Rainbow Apple logo](screenshots/apple-rainbow.png)
 
@@ -74,8 +73,11 @@ These are screenshots from the running bar widget:
 
 ![White Apple logo image](screenshots/apple-white.png)
 
+![Windows logo image](screenshots/windows.png)
+
 The image examples use these direct HTTPS sources:
 
 - Rainbow Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20Computer%20Logo%20rainbow.svg`
 - Modern Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_black.svg`
 - White Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_white.svg`
+- Windows logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2012.svg`

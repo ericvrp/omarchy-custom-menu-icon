@@ -16,35 +16,92 @@ BarWidget {
 
   property bool editorOpen: false
   property bool componentReady: false
+  property string panelSelection: "default"
+  property string builtInMenuIcon: "\ue900"
   property string imagePath: ""
   property string imageError: ""
   property int imageRequestSerial: 0
 
+  readonly property string omarchyPath: Quickshell.env("OMARCHY_PATH")
   readonly property string configuredValue: String(root.setting("text", ""))
   readonly property bool isImageUrl: /^https:\/\//i.test(root.configuredValue)
   readonly property string displayText: root.configuredValue && !root.isImageUrl
     ? root.configuredValue
-    : "\ue900"
+    : root.builtInMenuIcon
   readonly property bool showingImage: root.isImageUrl && root.imagePath !== ""
+  readonly property bool customOpen: root.panelSelection === "custom"
   readonly property string fetchScript: decodeURIComponent(
     Qt.resolvedUrl("scripts/fetch-image.sh").toString().replace(/^file:\/\//, "")
   )
+  readonly property var presetOptions: [
+    { id: "default", label: "Omarchy", value: "", kind: "builtin" },
+    { id: "heart", label: "Heart", value: "❤️", kind: "text" },
+    {
+      id: "rainbow-apple",
+      label: "Rainbow Apple",
+      value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20Computer%20Logo%20rainbow.svg",
+      kind: "image"
+    },
+    {
+      id: "modern-apple",
+      label: "Modern Apple",
+      value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_black.svg",
+      kind: "image"
+    },
+    {
+      id: "white-apple",
+      label: "White Apple",
+      value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_white.svg",
+      kind: "image"
+    },
+    {
+      id: "windows",
+      label: "Windows",
+      value: "https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2012.svg",
+      kind: "image"
+    },
+    { id: "custom", label: "Custom", value: "", kind: "custom" }
+  ]
   readonly property bool opened: root.editorOpen
 
   implicitWidth: button.implicitWidth
   implicitHeight: button.implicitHeight
 
   function focusEditor() {
-    if (!root.editorOpen) return
+    if (!root.editorOpen || !root.customOpen) return
     editorField.forceActiveFocus()
     editorField.selectAll()
   }
 
-  function openEditor() {
-    if (root.editorOpen) {
-      root.focusEditor()
+  function presetForValue(value) {
+    var candidate = String(value === undefined || value === null ? "" : value)
+    for (var i = 0; i < root.presetOptions.length; i++) {
+      var option = root.presetOptions[i]
+      if (option.kind !== "custom" && String(option.value) === candidate) return option.id
+    }
+    return "custom"
+  }
+
+  function showCustomEditor() {
+    root.panelSelection = "custom"
+    editorField.text = root.configuredValue
+    Qt.callLater(root.focusEditor)
+  }
+
+  function choosePreset(option) {
+    if (!option) return
+    if (option.id === "custom") {
+      root.showCustomEditor()
       return
     }
+    root.saveValue(option.value)
+  }
+
+  function openEditor() {
+    if (root.editorOpen) {
+      return
+    }
+    root.panelSelection = root.presetForValue(root.configuredValue)
     editorField.text = root.configuredValue
     // KeyboardPanel is a full-screen layer surface. Mapping it during the
     // initiating mouse-release event lets its dismissal surface consume that
@@ -64,6 +121,30 @@ BarWidget {
   function toggleEditor() {
     if (root.editorOpen) root.closeEditor()
     else root.openEditor()
+  }
+
+  // Read the stock widget rather than a screenshot or copied PNG. This keeps
+  // the preset aligned with the current Omarchy menu glyph if Omarchy changes
+  // it in a future release.
+  function loadBuiltInMenuIcon(source) {
+    var match = String(source || "").match(/text\s*:\s*"((?:\\.|[^"])*)"/)
+    if (!match) return
+    try {
+      var icon = JSON.parse('"' + match[1] + '"')
+      if (icon) root.builtInMenuIcon = icon
+    } catch (error) {
+      // Keep the known stock fallback when the packaged source is unavailable
+      // or its syntax is not a simple quoted text binding.
+    }
+  }
+
+  FileView {
+    id: stockMenuBarWidgetFile
+    path: root.omarchyPath + "/shell/plugins/menu/BarWidget.qml"
+    watchChanges: true
+    printErrors: false
+    onLoaded: root.loadBuiltInMenuIcon(text())
+    onFileChanged: reload()
   }
 
   Timer {
@@ -156,7 +237,7 @@ BarWidget {
     anchors.fill: parent
     bar: root.bar
     text: root.showingImage ? "\u200b" : root.displayText
-    fontFamily: root.displayText === "\ue900"
+    fontFamily: root.displayText === root.builtInMenuIcon
       ? "omarchy"
       : root.setting("fontFamily", root.bar ? root.bar.fontFamily : Style.font.family)
     fixedWidth: root.showingImage ? root.barSize : -1
@@ -203,11 +284,11 @@ BarWidget {
     bar: root.bar
     owner: root
     open: root.editorOpen
-    focusTarget: editorField
+    focusTarget: root.customOpen ? editorField : null
     contentWidth: editorPopup.fittedContentWidth(Style.space(390))
     contentHeight: editorPopup.fittedContentHeight(editorColumn.implicitHeight)
 
-    onOpenChanged: if (open) Qt.callLater(root.focusEditor)
+    onOpenChanged: if (open && root.customOpen) Qt.callLater(root.focusEditor)
 
     Column {
       id: editorColumn
@@ -217,59 +298,178 @@ BarWidget {
 
       Text {
         textFormat: Text.PlainText
-        text: "Omarchy menu icon"
+        text: "Choose menu icon"
         color: root.bar ? root.bar.foreground : Color.foreground
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.title
         font.bold: true
       }
 
-      TextField {
-        id: editorField
+      Text {
+        width: parent.width
+        textFormat: Text.PlainText
+        text: "Choose a preset, or select Custom to enter your own text, emoji, or HTTPS image URL."
+        color: root.bar ? root.bar.foreground : Color.foreground
+        font.family: root.bar ? root.bar.fontFamily : Style.font.family
+        opacity: 0.72
+        font.pixelSize: Style.font.bodySmall
+        wrapMode: Text.WordWrap
+      }
+
+      Grid {
+        id: presetGrid
 
         width: parent.width
-        placeholderText: "Text, emoji, or https://… image URL"
-        foreground: root.bar ? root.bar.foreground : Color.foreground
-        font.family: root.bar ? root.bar.fontFamily : Style.font.family
-        onAccepted: root.saveValue(text)
-        Keys.onPressed: function(event) {
-          if (event.key === Qt.Key_Escape) {
-            root.closeEditor()
-            event.accepted = true
+        columns: 3
+        spacing: Style.space(6)
+        property real cellHeight: Style.space(78)
+        property int rowCount: Math.ceil(root.presetOptions.length / columns)
+        height: rowCount * cellHeight + Math.max(0, rowCount - 1) * spacing
+
+        Repeater {
+          model: root.presetOptions
+
+          delegate: Button {
+            required property var modelData
+
+            width: (presetGrid.width - presetGrid.spacing * (presetGrid.columns - 1)) / presetGrid.columns
+            height: presetGrid.cellHeight
+            text: ""
+            iconText: ""
+            horizontalPadding: 0
+            verticalPadding: 0
+            foreground: root.bar ? root.bar.foreground : Color.foreground
+            fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
+            bordered: true
+            selected: root.panelSelection === modelData.id
+            onClicked: root.choosePreset(modelData)
+
+            Column {
+              enabled: false
+              anchors.fill: parent
+              anchors.margins: Style.space(4)
+              spacing: Style.space(2)
+
+              Item {
+                width: parent.width
+                height: Style.space(38)
+
+                Rectangle {
+                  visible: modelData.kind === "image"
+                  anchors.centerIn: parent
+                  width: Style.space(38)
+                  height: width
+                  radius: Style.cornerRadius
+                  color: modelData.id === "modern-apple"
+                    ? (root.bar ? root.bar.foreground : Color.foreground)
+                    : (modelData.id === "white-apple"
+                      ? (root.bar ? root.bar.background : Color.background)
+                      : "transparent")
+                }
+
+                Text {
+                  visible: modelData.kind === "builtin"
+                    || modelData.kind === "text"
+                    || modelData.kind === "custom"
+                  anchors.centerIn: parent
+                  text: modelData.kind === "builtin"
+                    ? root.builtInMenuIcon
+                    : (modelData.kind === "custom" ? "Aa" : modelData.value)
+                  color: root.bar ? root.bar.foreground : Color.foreground
+                  font.family: modelData.kind === "builtin"
+                    ? "omarchy"
+                    : (root.bar ? root.bar.fontFamily : Style.font.family)
+                  font.pixelSize: modelData.kind === "builtin"
+                    ? Style.font.display
+                    : (modelData.kind === "custom" ? Style.font.title : Style.font.display)
+                }
+
+                Image {
+                  visible: modelData.kind === "image"
+                  anchors.centerIn: parent
+                  width: Style.space(34)
+                  height: width
+                  asynchronous: true
+                  cache: true
+                  mipmap: true
+                  smooth: true
+                  fillMode: Image.PreserveAspectFit
+                  sourceSize.width: width
+                  sourceSize.height: height
+                  source: modelData.kind === "image" ? modelData.value : ""
+                }
+              }
+
+              Text {
+                width: parent.width
+                height: implicitHeight
+                textFormat: Text.PlainText
+                text: modelData.label
+                color: root.bar ? root.bar.foreground : Color.foreground
+                font.family: root.bar ? root.bar.fontFamily : Style.font.family
+                font.pixelSize: Style.font.bodySmall
+                horizontalAlignment: Text.AlignHCenter
+                elide: Text.ElideRight
+              }
+            }
           }
         }
       }
 
-      Text {
+      Item {
+        id: customFormContainer
         width: parent.width
-        textFormat: Text.PlainText
-        text: "Keep this field focused, then use the normal Omarchy emoji picker (Super+Ctrl+E) to paste an emoji here."
-        color: root.bar ? root.bar.foreground : Color.foreground
-        opacity: 0.72
-        font.family: root.bar ? root.bar.fontFamily : Style.font.family
-        font.pixelSize: Style.font.caption
-        wrapMode: Text.WordWrap
-      }
+        visible: root.customOpen
+        height: visible ? customForm.implicitHeight : 0
+        implicitHeight: height
 
-      Row {
-        spacing: Style.space(6)
+        Column {
+          id: customForm
+          width: parent.width
+          spacing: Style.space(8)
 
-        Button {
-          text: "Save"
-          foreground: root.bar ? root.bar.foreground : Color.foreground
-          onClicked: root.saveValue(editorField.text)
-        }
+          TextField {
+            id: editorField
 
-        Button {
-          text: "Reset"
-          foreground: root.bar ? root.bar.foreground : Color.foreground
-          onClicked: root.saveValue("")
-        }
+            width: parent.width
+            placeholderText: "Text, emoji, or https://… image URL"
+            foreground: root.bar ? root.bar.foreground : Color.foreground
+            font.family: root.bar ? root.bar.fontFamily : Style.font.family
+            onAccepted: root.saveValue(text)
+            Keys.onPressed: function(event) {
+              if (event.key === Qt.Key_Escape) {
+                root.closeEditor()
+                event.accepted = true
+              }
+            }
+          }
 
-        Button {
-          text: "Cancel"
-          foreground: root.bar ? root.bar.foreground : Color.foreground
-          onClicked: root.closeEditor()
+          Text {
+            width: parent.width
+            textFormat: Text.PlainText
+            text: "Keep this field focused, then use the normal Omarchy emoji picker (Super+Ctrl+E) to paste an emoji here."
+            color: root.bar ? root.bar.foreground : Color.foreground
+            opacity: 0.72
+            font.family: root.bar ? root.bar.fontFamily : Style.font.family
+            font.pixelSize: Style.font.caption
+            wrapMode: Text.WordWrap
+          }
+
+          Row {
+            spacing: Style.space(6)
+
+            Button {
+              text: "Save"
+              foreground: root.bar ? root.bar.foreground : Color.foreground
+              onClicked: root.saveValue(editorField.text)
+            }
+
+            Button {
+              text: "Cancel"
+              foreground: root.bar ? root.bar.foreground : Color.foreground
+              onClicked: root.closeEditor()
+            }
+          }
         }
       }
     }
