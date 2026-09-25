@@ -11,7 +11,10 @@ esac
 cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/omarchy-menu-icon"
 mkdir -p "$cache_dir"
 
-hash=$(printf '%s' "$url" | sha256sum | cut -d' ' -f1)
+# Bump this when image normalization changes so an existing cache cannot keep
+# serving an image produced by an older conversion policy.
+cache_version=2
+hash=$(printf '%s\0%s' "$cache_version" "$url" | sha256sum | cut -d' ' -f1)
 output="$cache_dir/$hash.png"
 
 if [[ -s "$output" ]]; then
@@ -43,6 +46,7 @@ curl \
 # Keep the asset small enough for the 26px horizontal bar while preserving
 # its aspect ratio. A transparent square gives favicons a stable footprint.
 magick \
+  -background none \
   -limit memory 128MiB \
   -limit map 256MiB \
   "$download" \
@@ -52,7 +56,6 @@ magick \
   -fill none \
   -draw 'color 0,0 floodfill' \
   -thumbnail '20x20>' \
-  -background none \
   -gravity center \
   -extent 20x20 \
   "PNG32:$converted"
