@@ -29,6 +29,8 @@ BarWidget {
     ? root.configuredValue
     : root.builtInMenuIcon
   readonly property bool showingImage: root.isImageUrl && root.imagePath !== ""
+  readonly property bool showingBundledImage: root.isImageUrl
+    && root.localImagePathForValue(root.configuredValue) !== ""
   readonly property bool customOpen: root.panelSelection === "custom"
   readonly property string fetchScript: decodeURIComponent(
     Qt.resolvedUrl("scripts/fetch-image.sh").toString().replace(/^file:\/\//, "")
@@ -75,7 +77,7 @@ BarWidget {
     {
       id: "windows-white",
       label: "Windows white",
-      value: "https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2021_%28White%29.svg",
+      value: "https://raw.githubusercontent.com/ericvrp/omarchy-custom-menu-icon/main/assets/windows-white.png",
       kind: "image",
       asset: "windows-white.png"
     },
@@ -284,9 +286,7 @@ BarWidget {
     hasVisualContent: true
     keepSpace: true
     horizontalMargin: root.showingImage ? 4 : 7.5
-    tooltipText: root.isImageUrl
-      ? (root.showingImage ? root.configuredValue : "Downloading menu image…")
-      : "Right-click to customize"
+    tooltipText: "Right-click to customize"
 
     onPressed: function(mouseButton) {
       if (mouseButton === Qt.RightButton) {
@@ -305,13 +305,16 @@ BarWidget {
       visible: root.showingImage
       enabled: false
       asynchronous: true
-      mipmap: true
+      // Keep the bundled 128px source intact. On a scaled display, asking
+      // Qt for only the logical bar size produces a low-resolution texture
+      // which is then enlarged for the physical pixels.
+      mipmap: false
       smooth: true
       width: Math.max(16, root.barSize - 8)
       height: Math.max(16, root.barSize - 8)
       fillMode: Image.PreserveAspectFit
-      sourceSize.width: width
-      sourceSize.height: height
+      sourceSize.width: root.showingBundledImage ? 128 : width
+      sourceSize.height: root.showingBundledImage ? 128 : height
       source: root.showingImage ? Util.fileUrl(root.imagePath) : ""
     }
   }
@@ -361,7 +364,7 @@ BarWidget {
         width: parent.width
         columns: 3
         spacing: Style.space(6)
-        property real cellHeight: Style.space(78)
+        property real cellHeight: Style.space(54)
         property int rowCount: Math.ceil(root.presetOptions.length / columns)
         height: rowCount * cellHeight + Math.max(0, rowCount - 1) * spacing
 
@@ -379,78 +382,61 @@ BarWidget {
             verticalPadding: 0
             foreground: root.bar ? root.bar.foreground : Color.foreground
             fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
+            tooltipText: modelData.label
             bordered: true
             selected: root.panelSelection === modelData.id
             onClicked: root.choosePreset(modelData)
 
-            Column {
+            Item {
               enabled: false
               anchors.fill: parent
               anchors.margins: Style.space(4)
-              spacing: Style.space(2)
 
-              Item {
-                width: parent.width
-                height: Style.space(38)
-
-                Rectangle {
-                  visible: modelData.kind === "image"
-                  anchors.centerIn: parent
-                  width: Style.space(38)
-                  height: width
-                  radius: Style.cornerRadius
-                  color: modelData.id === "modern-apple" || modelData.id === "windows-dark"
-                    ? (root.bar ? root.bar.foreground : Color.foreground)
-                    : (modelData.id === "white-apple" || modelData.id === "windows-white"
-                      ? (root.bar ? root.bar.background : Color.background)
-                      : "transparent")
-                }
-
-                Text {
-                  visible: modelData.kind === "builtin"
-                    || modelData.kind === "text"
-                    || modelData.kind === "custom"
-                  anchors.centerIn: parent
-                  text: modelData.kind === "builtin"
-                    ? root.builtInMenuIcon
-                    : (modelData.kind === "custom" ? "Aa" : modelData.value)
-                  color: root.bar ? root.bar.foreground : Color.foreground
-                  font.family: modelData.kind === "builtin"
-                    ? "omarchy"
-                    : (root.bar ? root.bar.fontFamily : Style.font.family)
-                  font.pixelSize: modelData.kind === "builtin"
-                    ? Style.font.display
-                    : (modelData.kind === "custom" ? Style.font.title : Style.font.display)
-                }
-
-                Image {
-                  visible: modelData.kind === "image"
-                  anchors.centerIn: parent
-                  width: Style.space(28)
-                  height: width
-                  asynchronous: true
-                  cache: true
-                  mipmap: true
-                  smooth: true
-                  fillMode: Image.PreserveAspectFit
-                  sourceSize.width: 128
-                  sourceSize.height: 128
-                  source: modelData.kind === "image" && modelData.asset
-                    ? Qt.resolvedUrl("assets/" + modelData.asset)
-                    : ""
-                }
+              Rectangle {
+                visible: modelData.kind === "image"
+                anchors.centerIn: parent
+                width: Style.space(38)
+                height: width
+                radius: Style.cornerRadius
+                color: modelData.id === "modern-apple" || modelData.id === "windows-dark"
+                  ? (root.bar ? root.bar.foreground : Color.foreground)
+                  : (modelData.id === "white-apple" || modelData.id === "windows-white"
+                    ? (root.bar ? root.bar.background : Color.background)
+                    : "transparent")
               }
 
               Text {
-                width: parent.width
-                height: implicitHeight
-                textFormat: Text.PlainText
-                text: modelData.label
+                visible: modelData.kind === "builtin"
+                  || modelData.kind === "text"
+                  || modelData.kind === "custom"
+                anchors.centerIn: parent
+                text: modelData.kind === "builtin"
+                  ? root.builtInMenuIcon
+                  : (modelData.kind === "custom" ? "Custom" : modelData.value)
                 color: root.bar ? root.bar.foreground : Color.foreground
-                font.family: root.bar ? root.bar.fontFamily : Style.font.family
-                font.pixelSize: Style.font.bodySmall
-                horizontalAlignment: Text.AlignHCenter
-                elide: Text.ElideRight
+                font.family: modelData.kind === "builtin"
+                  ? "omarchy"
+                  : (root.bar ? root.bar.fontFamily : Style.font.family)
+                font.pixelSize: modelData.kind === "builtin"
+                  ? Style.font.display
+                  : (modelData.kind === "custom" ? Style.font.title : Style.font.display)
+              }
+
+              Image {
+                visible: modelData.kind === "image"
+                anchors.centerIn: parent
+                width: Style.space(28)
+                height: width
+                asynchronous: true
+                cache: true
+                mipmap: true
+                smooth: true
+                fillMode: Image.PreserveAspectFit
+                sourceSize.width: 128
+                sourceSize.height: 128
+                source: modelData.kind === "image" && modelData.asset
+                  ? Qt.resolvedUrl("assets/" + modelData.asset)
+                  : ""
               }
             }
           }
@@ -483,17 +469,6 @@ BarWidget {
                 event.accepted = true
               }
             }
-          }
-
-          Text {
-            width: parent.width
-            textFormat: Text.PlainText
-            text: "Keep this field focused, then use the normal Omarchy emoji picker (Super+Ctrl+E) to paste an emoji here."
-            color: root.bar ? root.bar.foreground : Color.foreground
-            opacity: 0.72
-            font.family: root.bar ? root.bar.fontFamily : Style.font.family
-            font.pixelSize: Style.font.caption
-            wrapMode: Text.WordWrap
           }
 
           Row {

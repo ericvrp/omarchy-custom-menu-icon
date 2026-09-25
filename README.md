@@ -63,23 +63,23 @@ omarchy plugin update ericvrp.custom-menu-icon
 
 These are screenshots from the running bar widget:
 
-![Default Omarchy icon](screenshots/omarchy-default.png)
+<img src="screenshots/omarchy-default.png" width="600" alt="Default Omarchy icon">
 
-![Heart emoji](screenshots/heart.png)
+<img src="screenshots/heart.png" width="600" alt="Heart emoji">
 
-![Speech bubble emoji](screenshots/speech-bubble.png)
+<img src="screenshots/speech-bubble.png" width="600" alt="Speech bubble emoji">
 
-![Rainbow Apple logo](screenshots/apple-rainbow.png)
+<img src="screenshots/apple-rainbow.png" width="600" alt="Rainbow Apple logo">
 
-![Modern Apple logo image](screenshots/apple-modern.png)
+<img src="screenshots/apple-modern.png" width="600" alt="Modern Apple logo image">
 
-![White Apple logo image](screenshots/apple-white.png)
+<img src="screenshots/apple-white.png" width="600" alt="White Apple logo image">
 
-![Blue Windows logo image](screenshots/windows.png)
+<img src="screenshots/windows.png" width="600" alt="Blue Windows logo image">
 
-![Dark Windows logo image](screenshots/windows-dark.png)
+<img src="screenshots/windows-dark.png" width="600" alt="Dark Windows logo image">
 
-![White Windows logo image](screenshots/windows-white.png)
+<img src="screenshots/windows-white.png" width="600" alt="White Windows logo image">
 
 The image examples use these direct HTTPS sources:
 
@@ -88,7 +88,7 @@ The image examples use these direct HTTPS sources:
 - White Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_white.svg`
 - Windows blue logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2012.svg`
 - Windows dark logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_2012-Black.svg`
-- Windows white logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2021_%28White%29.svg`
+- Windows white logo — `https://raw.githubusercontent.com/ericvrp/omarchy-custom-menu-icon/main/assets/windows-white.png`
 
 The chooser uses bundled, transparent high-resolution PNG previews for these
 preset images. Custom HTTPS image URLs continue to be downloaded and cached
