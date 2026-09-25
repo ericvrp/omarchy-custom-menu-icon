@@ -1,7 +1,7 @@
-# Omarchy Menu Icon
+# Omarchy Custom Menu Icon
 
 An Omarchy shell plugin that replaces the stock `omarchy.menu` bar button with
-a customizable menu icon. It keeps the normal Omarchy menu, while allowing the
+a customizable icon. It keeps the normal Omarchy menu, while allowing the
 button to display:
 
 - the original Omarchy glyph;
@@ -30,7 +30,7 @@ a favicon. Images are downloaded only when the configured value changes and are
 cached below:
 
 ```text
-~/.cache/omarchy-menu-icon/
+~/.cache/omarchy-custom-menu-icon/
 ```
 
 The helper requires `curl` and ImageMagick (`magick`). Invalid or unavailable
@@ -39,7 +39,7 @@ images fall back to the Omarchy glyph.
 ## Install
 
 ```bash
-omarchy plugin add https://github.com/ericvrp/omarchy-menu-icon.git --enable
+omarchy plugin add https://github.com/ericvrp/omarchy-custom-menu-icon.git --enable
 ```
 
 This plugin declares itself as a fork of `omarchy.menu`. Enabling it replaces
@@ -55,12 +55,14 @@ normal Git checkout. QML files reload after saving under
 
 ```bash
 omarchy-shell shell rescanPlugins
-omarchy plugin update ericvrp.menu-icon
+omarchy plugin update ericvrp.custom-menu-icon
 ```
 
 ## Examples
 
 These are screenshots from the running bar widget:
+
+![Default Omarchy icon](screenshots/omarchy-default.png)
 
 ![Green apple emoji](screenshots/green-apple.png)
 

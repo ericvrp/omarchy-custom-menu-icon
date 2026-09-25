@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "ericvrp.menu-icon",
-  "name": "Omarchy Menu Icon",
+  "id": "ericvrp.custom-menu-icon",
+  "name": "Omarchy Custom Menu Icon",
   "version": "0.1.0",
   "author": "Eric van Riet Paap",
   "license": "MIT",
@@ -19,7 +19,7 @@
     "clonedFrom": "omarchy.menu"
   },
   "barWidget": {
-    "displayName": "Omarchy Menu Icon",
+    "displayName": "Omarchy Custom Menu Icon",
     "description": "Customize the Omarchy menu button with text, emoji, or an HTTPS image.",
     "category": "Compositor",
     "defaultSection": "left",

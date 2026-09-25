@@ -8,7 +8,7 @@ case "$url" in
   *) exit 2 ;;
 esac
 
-cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/omarchy-menu-icon"
+cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/omarchy-custom-menu-icon"
 mkdir -p "$cache_dir"
 
 # Bump this when image normalization changes so an existing cache cannot keep
