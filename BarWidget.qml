@@ -387,7 +387,7 @@ BarWidget {
                 Image {
                   visible: modelData.kind === "image"
                   anchors.centerIn: parent
-                  width: Style.space(34)
+                  width: Style.space(28)
                   height: width
                   asynchronous: true
                   cache: true

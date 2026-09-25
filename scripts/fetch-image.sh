@@ -13,7 +13,7 @@ mkdir -p "$cache_dir"
 
 # Bump this when image normalization changes so an existing cache cannot keep
 # serving an image produced by an older conversion policy.
-cache_version=2
+cache_version=3
 hash=$(printf '%s\0%s' "$cache_version" "$url" | sha256sum | cut -d' ' -f1)
 output="$cache_dir/$hash.png"
 
@@ -43,8 +43,10 @@ curl \
   --output "$download" \
   "$url"
 
-# Keep the asset small enough for the 26px horizontal bar while preserving
-# its aspect ratio. A transparent square gives favicons a stable footprint.
+# Keep the visible artwork small enough for the 26px horizontal bar while
+# preserving its aspect ratio. The transparent 20px square gives every image
+# a stable footprint, and the 16px artwork keeps solid logos visually aligned
+# with the smaller emoji/text presets.
 magick \
   -background none \
   -limit memory 128MiB \
@@ -55,7 +57,7 @@ magick \
   -fuzz 3% \
   -fill none \
   -draw 'color 0,0 floodfill' \
-  -thumbnail '20x20>' \
+  -thumbnail '16x16>' \
   -gravity center \
   -extent 20x20 \
   "PNG32:$converted"
