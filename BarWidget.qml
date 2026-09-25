@@ -105,7 +105,6 @@ BarWidget {
 
   function showCustomEditor() {
     root.panelSelection = "custom"
-    editorField.text = root.configuredValue
     Qt.callLater(root.focusEditor)
   }
 
@@ -136,7 +135,9 @@ BarWidget {
       return
     }
     root.panelSelection = root.presetForValue(root.configuredValue)
-    editorField.text = root.configuredValue
+    // Preset values must not overwrite the custom draft. Only sync the field
+    // when the currently configured value is itself a custom value.
+    if (root.panelSelection === "custom") editorField.text = root.configuredValue
     // KeyboardPanel is a full-screen layer surface. Mapping it during the
     // initiating mouse-release event lets its dismissal surface consume that
     // same click and close it immediately. Wait until the event is complete.
@@ -345,17 +346,6 @@ BarWidget {
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.title
         font.bold: true
-      }
-
-      Text {
-        width: parent.width
-        textFormat: Text.PlainText
-        text: "Choose a preset, or select Custom to enter your own text, emoji, or HTTPS image URL."
-        color: root.bar ? root.bar.foreground : Color.foreground
-        font.family: root.bar ? root.bar.fontFamily : Style.font.family
-        opacity: 0.72
-        font.pixelSize: Style.font.bodySmall
-        wrapMode: Text.WordWrap
       }
 
       Grid {
