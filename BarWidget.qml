@@ -23,6 +23,9 @@ BarWidget {
   property int imageRequestSerial: 0
 
   readonly property string omarchyPath: Quickshell.env("OMARCHY_PATH")
+  readonly property string homePath: Quickshell.env("HOME")
+  readonly property string onboardingMarkerPath: (Quickshell.env("XDG_STATE_HOME")
+    || (root.homePath + "/.local/state")) + "/omarchy-custom-menu-icon/onboarding-v1"
   readonly property string configuredValue: String(root.setting("text", ""))
   readonly property bool isImageUrl: /^https:\/\//i.test(root.configuredValue)
   readonly property string displayText: root.configuredValue && !root.isImageUrl
@@ -146,6 +149,16 @@ BarWidget {
     return 1
   }
 
+  function sendOnboardingNotification() {
+    Quickshell.execDetached([
+      root.omarchyPath + "/bin/omarchy-notification-send",
+      "--app-name", "omarchy-custom-menu-icon",
+      "--urgency", "critical",
+      "Customize your menu icon",
+      "Right-click the leftmost icon in the Omarchy topbar to customize it. Click this notification to dismiss it."
+    ])
+  }
+
   function openEditor() {
     if (root.editorOpen) {
       return
@@ -267,6 +280,29 @@ BarWidget {
   Component.onCompleted: {
     root.componentReady = true
     root.scheduleImageRefresh()
+    onboardingMarkerProcess.running = true
+  }
+
+  // Claim the onboarding notice once per user. mkdir is atomic, so multiple
+  // bar instances on a multi-monitor setup cannot send duplicate notices.
+  Process {
+    id: onboardingMarkerProcess
+
+    command: [
+      "bash", "-c",
+      "marker=\"$1\"; mkdir -p \"$(dirname -- \"$marker\")\"; if mkdir \"$marker\" 2>/dev/null; then printf show; fi",
+      "--", root.onboardingMarkerPath
+    ]
+
+    stdout: StdioCollector {
+      id: onboardingMarkerOutput
+      waitForEnd: true
+    }
+
+    onExited: function(exitCode) {
+      if (exitCode === 0 && String(onboardingMarkerOutput.text || "").trim() === "show")
+        root.sendOnboardingNotification()
+    }
   }
 
   Process {

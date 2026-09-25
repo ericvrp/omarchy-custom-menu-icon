@@ -47,6 +47,10 @@ This plugin declares itself as a fork of `omarchy.menu`. Enabling it replaces
 the stock menu button and routes the existing `omarchy.menu` shell commands to
 the copied menu implementation.
 
+On first enable, the plugin shows a persistent onboarding notification. It
+explains that the leftmost Omarchy topbar icon can be right-clicked to
+customize the icon; click the notification to dismiss it.
+
 ## Remove
 
 Disable and remove the plugin to restore the stock `omarchy.menu` button:
