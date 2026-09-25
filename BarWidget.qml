@@ -354,8 +354,6 @@ BarWidget {
     hasVisualContent: true
     keepSpace: true
     horizontalMargin: root.showingImage ? 4 : 7.5
-    tooltipText: "Right-click to customize"
-
     onPressed: function(mouseButton) {
       if (mouseButton === Qt.RightButton) {
         root.toggleEditor()
