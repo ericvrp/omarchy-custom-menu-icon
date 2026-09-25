@@ -44,42 +44,48 @@ BarWidget {
       label: "Rainbow Apple",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20Computer%20Logo%20rainbow.svg",
       kind: "image",
-      asset: "apple-rainbow.png"
+      asset: "apple-rainbow.png",
+      topbarScale: 28 / 36
     },
     {
       id: "modern-apple",
       label: "Modern Apple",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_black.svg",
       kind: "image",
-      asset: "apple-modern.png"
+      asset: "apple-modern.png",
+      topbarScale: 28 / 36
     },
     {
       id: "white-apple",
       label: "White Apple",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_white.svg",
       kind: "image",
-      asset: "apple-white.png"
+      asset: "apple-white.png",
+      topbarScale: 28 / 36
     },
     {
       id: "windows-blue",
       label: "Windows blue",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2012.svg",
       kind: "image",
-      asset: "windows-blue.png"
+      asset: "windows-blue.png",
+      topbarScale: 27 / 30
     },
     {
       id: "windows-dark",
       label: "Windows dark",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_2012-Black.svg",
       kind: "image",
-      asset: "windows-dark.png"
+      asset: "windows-dark.png",
+      topbarScale: 27 / 30
     },
     {
       id: "windows-white",
       label: "Windows white",
       value: "https://raw.githubusercontent.com/ericvrp/omarchy-custom-menu-icon/main/assets/windows-white.png",
       kind: "image",
-      asset: "windows-white.png"
+      asset: "windows-white.png",
+      topbarScale: 27 / 30
     },
     { id: "custom", label: "Custom", value: "", kind: "custom" }
   ]
@@ -128,6 +134,16 @@ BarWidget {
       }
     }
     return ""
+  }
+
+  function topbarImageScaleForValue(value) {
+    var candidate = String(value === undefined || value === null ? "" : value)
+    for (var i = 0; i < root.presetOptions.length; i++) {
+      var option = root.presetOptions[i]
+      if (option.kind === "image" && String(option.value) === candidate)
+        return Number(option.topbarScale || 1)
+    }
+    return 1
   }
 
   function openEditor() {
@@ -311,8 +327,8 @@ BarWidget {
       // which is then enlarged for the physical pixels.
       mipmap: false
       smooth: true
-      width: Math.max(16, root.barSize - 8)
-      height: Math.max(16, root.barSize - 8)
+      width: Math.max(16, root.barSize - 8) * root.topbarImageScaleForValue(root.configuredValue)
+      height: Math.max(16, root.barSize - 8) * root.topbarImageScaleForValue(root.configuredValue)
       fillMode: Image.PreserveAspectFit
       sourceSize.width: root.showingBundledImage ? 128 : width
       sourceSize.height: root.showingBundledImage ? 128 : height
