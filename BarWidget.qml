@@ -156,7 +156,7 @@ BarWidget {
 
     onPressed: function(mouseButton) {
       if (mouseButton === Qt.RightButton) {
-        root.openEditor()
+        root.toggleEditor()
       } else if (mouseButton === Qt.MiddleButton) {
         root.closeEditor()
         if (root.bar) root.bar.run("xdg-terminal-exec")
