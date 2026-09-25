@@ -96,6 +96,15 @@ BarWidget {
     root.refreshImage()
   }
 
+  // Useful for keyboard launchers and for testing without a pointer. The
+  // normal user-facing path remains the right mouse button.
+  IpcHandler {
+    target: "ericvrp.menu-icon"
+
+    function edit(): void { root.broadcast("openEditor") }
+    function reset(): void { root.broadcast("saveValue", "") }
+  }
+
   Process {
     id: imageProcess
 
