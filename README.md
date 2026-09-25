@@ -47,6 +47,21 @@ This plugin declares itself as a fork of `omarchy.menu`. Enabling it replaces
 the stock menu button and routes the existing `omarchy.menu` shell commands to
 the copied menu implementation.
 
+## Remove
+
+Disable and remove the plugin to restore the stock `omarchy.menu` button:
+
+```bash
+omarchy plugin disable ericvrp.custom-menu-icon
+omarchy plugin remove ericvrp.custom-menu-icon --yes
+```
+
+## Dependencies and license
+
+The plugin requires Omarchy Quattro. Custom HTTPS image support additionally
+uses `curl` and ImageMagick (`magick`); no privileged setup is required. The
+plugin is released under the MIT license; see [LICENSE](LICENSE).
+
 ## Development
 
 The plugin is a small public fork of Omarchy's first-party menu plugin. The
