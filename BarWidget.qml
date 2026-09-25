@@ -50,6 +50,10 @@ BarWidget {
     root.editorOpen = false
   }
 
+  // KeyboardPanel calls the owner using the standard popup lifecycle names.
+  function open() { root.openEditor() }
+  function close() { root.closeEditor() }
+
   function toggleEditor() {
     if (root.editorOpen) root.closeEditor()
     else root.openEditor()
@@ -162,17 +166,14 @@ BarWidget {
     }
   }
 
-  PopupCard {
+  KeyboardPanel {
     id: editorPopup
 
     anchorItem: button
     bar: root.bar
     owner: root
     open: root.editorOpen
-    // The standard emoji picker temporarily takes keyboard focus. Do not use
-    // PopupCard's Hyprland focus grab here or it would dismiss this editor
-    // before the picker can paste back into its field.
-    triggerMode: "hover"
+    focusTarget: editorField
     contentWidth: editorPopup.fittedContentWidth(Style.space(390))
     contentHeight: editorPopup.fittedContentHeight(editorColumn.implicitHeight)
 
