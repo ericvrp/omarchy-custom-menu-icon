@@ -39,12 +39,11 @@ BarWidget {
     Qt.resolvedUrl("scripts/fetch-image.sh").toString().replace(/^file:\/\//, "")
   )
   readonly property var presetOptions: [
-    { id: "default", label: "Omarchy", value: "", kind: "builtin" },
-    { id: "heart", label: "Heart", value: "❤️", kind: "text" },
-    { id: "speech-bubble", label: "Speech bubble", value: "💬", kind: "text" },
+    { id: "default", value: "", kind: "builtin" },
+    { id: "heart", value: "❤️", kind: "text" },
+    { id: "torii", value: "⛩️", kind: "text" },
     {
       id: "rainbow-apple",
-      label: "Rainbow Apple",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20Computer%20Logo%20rainbow.svg",
       kind: "image",
       asset: "apple-rainbow.png",
@@ -52,7 +51,6 @@ BarWidget {
     },
     {
       id: "modern-apple",
-      label: "Modern Apple",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_black.svg",
       kind: "image",
       asset: "apple-modern.png",
@@ -60,15 +58,34 @@ BarWidget {
     },
     {
       id: "white-apple",
-      label: "White Apple",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_white.svg",
       kind: "image",
       asset: "apple-white.png",
       topbarScale: 28 / 36
     },
     {
+      id: "google-color",
+      value: "https://commons.wikimedia.org/wiki/Special:FilePath/Google%20%22G%22%20logo.svg",
+      kind: "image",
+      asset: "google-color.png",
+      topbarScale: 27 / 30
+    },
+    {
+      id: "google-dark",
+      value: "https://raw.githubusercontent.com/ericvrp/omarchy-custom-menu-icon/main/assets/google-dark.png",
+      kind: "image",
+      asset: "google-dark.png",
+      topbarScale: 27 / 30
+    },
+    {
+      id: "google-white",
+      value: "https://raw.githubusercontent.com/ericvrp/omarchy-custom-menu-icon/main/assets/google-white.png",
+      kind: "image",
+      asset: "google-white.png",
+      topbarScale: 27 / 30
+    },
+    {
       id: "windows-blue",
-      label: "Windows blue",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2012.svg",
       kind: "image",
       asset: "windows-blue.png",
@@ -76,7 +93,6 @@ BarWidget {
     },
     {
       id: "windows-dark",
-      label: "Windows dark",
       value: "https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_2012-Black.svg",
       kind: "image",
       asset: "windows-dark.png",
@@ -84,13 +100,12 @@ BarWidget {
     },
     {
       id: "windows-white",
-      label: "Windows white",
       value: "https://raw.githubusercontent.com/ericvrp/omarchy-custom-menu-icon/main/assets/windows-white.png",
       kind: "image",
       asset: "windows-white.png",
       topbarScale: 27 / 30
     },
-    { id: "custom", label: "Custom", value: "", kind: "custom" }
+    { id: "custom", value: "", kind: "custom" }
   ]
   readonly property bool opened: root.editorOpen
 
@@ -424,7 +439,6 @@ BarWidget {
             verticalPadding: 0
             foreground: root.bar ? root.bar.foreground : Color.foreground
             fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
-            tooltipText: modelData.label
             bordered: true
             selected: root.panelSelection === modelData.id
             onClicked: root.choosePreset(modelData)
@@ -440,9 +454,13 @@ BarWidget {
                 width: Style.space(38)
                 height: width
                 radius: Style.cornerRadius
-                color: modelData.id === "modern-apple" || modelData.id === "windows-dark"
+                color: modelData.id === "modern-apple"
+                  || modelData.id === "windows-dark"
+                  || modelData.id === "google-dark"
                   ? (root.bar ? root.bar.foreground : Color.foreground)
-                  : (modelData.id === "white-apple" || modelData.id === "windows-white"
+                  : (modelData.id === "white-apple"
+                    || modelData.id === "windows-white"
+                    || modelData.id === "google-white"
                     ? (root.bar ? root.bar.background : Color.background)
                     : "transparent")
               }

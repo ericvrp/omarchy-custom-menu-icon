@@ -86,13 +86,19 @@ These are screenshots from the running bar widget:
 
 <img src="screenshots/heart.png" width="600" alt="Heart emoji">
 
-<img src="screenshots/speech-bubble.png" width="600" alt="Speech bubble emoji">
+<img src="screenshots/torii.png" width="600" alt="Torii gate emoji">
 
 <img src="screenshots/apple-rainbow.png" width="600" alt="Rainbow Apple logo">
 
 <img src="screenshots/apple-modern.png" width="600" alt="Modern Apple logo image">
 
 <img src="screenshots/apple-white.png" width="600" alt="White Apple logo image">
+
+<img src="screenshots/google-color.png" width="600" alt="Google color logo">
+
+<img src="screenshots/google-dark.png" width="600" alt="Google dark logo">
+
+<img src="screenshots/google-white.png" width="600" alt="Google white logo">
 
 <img src="screenshots/windows.png" width="600" alt="Blue Windows logo image">
 
@@ -105,6 +111,9 @@ The image examples use these direct HTTPS sources:
 - Rainbow Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20Computer%20Logo%20rainbow.svg`
 - Modern Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_black.svg`
 - White Apple logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Apple_logo_white.svg`
+- Google color logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Google%20%22G%22%20logo.svg`
+- Google dark logo — `https://raw.githubusercontent.com/ericvrp/omarchy-custom-menu-icon/main/assets/google-dark.png`
+- Google white logo — `https://raw.githubusercontent.com/ericvrp/omarchy-custom-menu-icon/main/assets/google-white.png`
 - Windows blue logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_-_2012.svg`
 - Windows dark logo — `https://commons.wikimedia.org/wiki/Special:FilePath/Windows_logo_2012-Black.svg`
 - Windows white logo — `https://raw.githubusercontent.com/ericvrp/omarchy-custom-menu-icon/main/assets/windows-white.png`
