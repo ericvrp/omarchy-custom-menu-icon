@@ -110,13 +110,24 @@ BarWidget {
     imageProcess.running = true
   }
 
-  // The shell replaces the settings object when an inline bar value changes.
-  // Listen to that object directly so a newly entered URL is always resolved,
-  // even when the derived setting binding is not invalidated by QML.
-  onSettingsChanged: if (root.componentReady) root.refreshImage()
+  function scheduleImageRefresh() {
+    if (root.componentReady) imageRefreshTimer.restart()
+  }
+
+  Timer {
+    id: imageRefreshTimer
+    interval: 20
+    onTriggered: root.refreshImage()
+  }
+
+  // Depending on whether a value came from the CLI or the editor, QML may
+  // invalidate either the settings object or the derived value first. Debounce
+  // both notifications into one image request.
+  onSettingsChanged: root.scheduleImageRefresh()
+  onConfiguredValueChanged: root.scheduleImageRefresh()
   Component.onCompleted: {
     root.componentReady = true
-    root.refreshImage()
+    root.scheduleImageRefresh()
   }
 
   Process {
