@@ -15,7 +15,7 @@ button to display:
 - **Middle click** — open a terminal
 - **Right click** — open the icon preset panel
 
-The panel offers the current built-in Omarchy glyph, the five example icons,
+The panel offers the current built-in Omarchy glyph, the example icons,
 and a **Custom** option. Custom text, emoji, and direct HTTPS image URLs can be
 entered in its text field and saved. The normal Omarchy emoji picker remains a
 separate action: keep the custom field focused and use its shortcut
@@ -66,6 +66,8 @@ These are screenshots from the running bar widget:
 ![Default Omarchy icon](screenshots/omarchy-default.png)
 
 ![Heart emoji](screenshots/heart.png)
+
+![Speech bubble emoji](screenshots/speech-bubble.png)
 
 ![Rainbow Apple logo](screenshots/apple-rainbow.png)
 

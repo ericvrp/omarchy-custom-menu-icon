@@ -36,6 +36,7 @@ BarWidget {
   readonly property var presetOptions: [
     { id: "default", label: "Omarchy", value: "", kind: "builtin" },
     { id: "heart", label: "Heart", value: "❤️", kind: "text" },
+    { id: "speech-bubble", label: "Speech bubble", value: "💬", kind: "text" },
     {
       id: "rainbow-apple",
       label: "Rainbow Apple",
